@@ -1,5 +1,6 @@
 package kr.ac.jejunu.user;
 
+import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
@@ -45,35 +46,39 @@ public class UserDaoTests {
         assertThat(insertedUser.getName(), is(name));
         assertThat(insertedUser.getPassword(), is(password));
     }
-//    @Test
-//    public void getForHalla() throws SQLException, ClassNotFoundException {
-//        Long id = 1l;
-//        String name = "hulk";
-//        String password = "1111";
-//        ConnectionMaker connectionMaker = new HallaConnectionMaker();
-//        UserDao userDao = new UserDao(connectionMaker);
-//        User user = userDao.findById(id);
-//        assertThat(user.getId(), is(id));
-//        assertThat(user.getName(), is(name));
-//        assertThat(user.getPassword(), is(password));
-//    }
-//
-//    @Test
-//    public void insertForHalla() throws SQLException, ClassNotFoundException {
-//        String name = "허윤호";
-//        String password = "1111";
-//        User user = new User();
-//        user.setName(name);
-//        user.setPassword(password);
-//        ConnectionMaker connectionMaker = new HallaConnectionMaker();
-//        UserDao userDao = new UserDao(connectionMaker);
-//        userDao.insert(user);
-//        assertThat(user.getId(), greaterThan(1l));
-//
-//        User insertedUser = userDao.findById(user.getId());
-//        assertThat(insertedUser.getId(),  is(user.getId()));
-//        assertThat(insertedUser.getName(), is(name));
-//        assertThat(insertedUser.getPassword(), is(password));
-//    }
 
+    @Test
+    public void update() throws SQLException, ClassNotFoundException {
+        User user = insertedUser();
+        String updateName = "updatedAiden";
+        String updatePassword = "2222";
+        user.setName(updateName);
+        user.setPassword((updatePassword));
+        userDao.update(user);
+
+        User updateUser = userDao.findById(user.getId());
+        assertThat(updateUser.getName(), is(updateName));
+        assertThat(updateUser.getPassword(), is(updatePassword));
+    }
+
+    private User insertedUser() throws ClassNotFoundException, SQLException {
+        String name = "김민재";
+        String password = "1111";
+        User user = new User();
+        user.setName(name);
+        user.setPassword(password);
+        userDao.insert(user);
+        return user;
+    }
+
+    @Test
+    public void delete() throws SQLException, ClassNotFoundException {
+        User user = insertedUser();
+        userDao.delete(user.getId());
+
+        User deletedUser = userDao.findById(user.getId());
+
+        assertThat(deletedUser, IsNull.nullValue());
+
+    }
 }
